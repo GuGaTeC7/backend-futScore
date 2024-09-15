@@ -3,6 +3,7 @@ package com.backend.futScore.controller;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,6 +48,15 @@ public class UserController {
                 .buildAndExpand(newUser.getId())
                 .toUri();
         return ResponseEntity.created(uri).body(newUser);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<User> validarSenha(@RequestBody User user) {
+        Boolean valid = userService.validarSenha(user);
+        if (!valid) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.status(200).build();
     }
 
 }
