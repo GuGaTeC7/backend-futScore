@@ -3,17 +3,18 @@ package com.backend.futScore.controller;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.backend.futScore.models.User;
+import com.backend.futScore.security.Token;
 import com.backend.futScore.service.UserService;
 
 import jakarta.validation.Valid;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/users")
 public class UserController {
 
@@ -51,12 +53,12 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> validarSenha(@RequestBody User user) {
-        Boolean valid = userService.validarSenha(user);
-        if (!valid) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<Token> logar(@RequestBody User user) {
+        Token token = userService.gerarToken(user);
+        if (token != null) {
+            return ResponseEntity.ok(token);
         }
-        return ResponseEntity.status(200).build();
+        return ResponseEntity.status(403).build();
     }
 
 }

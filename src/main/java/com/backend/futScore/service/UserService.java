@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.backend.futScore.models.User;
 import com.backend.futScore.repository.UserRepository;
+import com.backend.futScore.security.Token;
+import com.backend.futScore.security.TokenUtil;
 
 import java.util.List;
 
@@ -45,5 +47,16 @@ public class UserService {
             return false;
         }
         return passwordEncoder.matches(user.getPassword(), existingUser.getPassword());
+    }
+
+    public Token gerarToken(User user) {
+        User usuarioBanco = userRepository.findByEmail(user.getEmail());
+        if (usuarioBanco != null) {
+            Boolean valid = passwordEncoder.matches(user.getPassword(), usuarioBanco.getPassword());
+            if (valid) {
+                return new Token(TokenUtil.createToken(user));
+            }
+        }
+        return null;
     }
 }

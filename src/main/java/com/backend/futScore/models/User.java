@@ -25,6 +25,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "O nome é obrigatório!")
+    @Column(name = "name", nullable = false, length = 100)
+    private String name;
+
     @Email(message = "Insira um email válido!")
     @NotBlank(message = "O email é obrigatório!")
     @Column(name = "email", nullable = false, length = 100)
